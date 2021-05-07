@@ -6,7 +6,7 @@ import datetime
 import patoolib
 import argparse
 
-if sys.version < (3, 6):
+if sys.version_info < (3, 6):
 	sys.exit('python version must be 3.6 or higher')
 
 REQUIRED_AGE = datetime.timedelta(minutes=2)
