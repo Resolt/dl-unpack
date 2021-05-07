@@ -17,6 +17,8 @@ def main():
 
 	path_7z = shutil.which('7z')
 	if path_7z is None:
+		path_7z = shutil.which('p7zip')
+	if path_7z is None:
 		sys.exit('7z is not found')
 
 	for root, _, filenames in os.walk(args.dir):
