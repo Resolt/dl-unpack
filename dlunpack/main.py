@@ -1,4 +1,4 @@
-import os
+from os.path import join, exists, splitext, isdir, walk
 import sys
 import shutil
 import pathlib
@@ -16,19 +16,16 @@ def main():
 	args = get_args()
 
 	path_7z = get_7z()
-	if path_7z is None:
-		sys.exit('7z is not found')
 
-	for root, _, filenames in os.walk(args.dir):
-		for filename in filter(lambda x: os.path.splitext(x)[1] == '.rar', filenames):
-			filepath = os.path.join(root, filename)
-			flagpath = os.path.splitext(filepath)[0] + '.isunpacked'
-			couchpath = os.path.splitext(filepath)[0] + '.extracted.ignore'
-			if os.path.exists(flagpath) or os.path.exists(couchpath):
+	for root, _, filenames in walk(args.dir):
+		rarfiles = filter(lambda x: splitext(x)[1] == '.rar', filenames)
+		for filename in rarfiles:
+			filepath = join(root, filename)
+			flagpath = splitext(filepath)[0] + '.isunpacked'
+			couchpath = splitext(filepath)[0] + '.extracted.ignore'
+			if exists(flagpath) or exists(couchpath):
 				continue
-			mtime = get_mtime(filepath)
-			now = datetime.datetime.now()
-			age = now - mtime
+			age = get_age(filepath)
 			if age < REQUIRED_AGE:
 				continue
 			with open(flagpath, 'w') as f:
@@ -41,12 +38,20 @@ def get_7z() -> str:
 	path_7z = shutil.which('7z')
 	if path_7z is None:
 		path_7z = shutil.which('p7zip')
+	if path_7z is None:
+		sys.exit('7z is not found')
 	return path_7z
 
 
 def get_mtime(filepath: str) -> datetime.datetime:
 	fname = pathlib.Path(filepath)
 	return datetime.datetime.fromtimestamp(fname.stat().st_mtime)
+
+
+def get_age(filepath: str) -> datetime.timedelta:
+	mtime = get_mtime(filepath)
+	now = datetime.datetime.now()
+	return now - mtime
 
 
 def get_args():
@@ -62,10 +67,10 @@ def get_args():
 	if args.dir is None:
 		argparser.error('--dir must be provided')
 
-	if not os.path.exists(args.dir):
+	if not exists(args.dir):
 		argparser.error(f'Target directory does not exists : {args.dir}')
 
-	if not os.path.isdir(args.dir):
+	if not isdir(args.dir):
 		argparser.error(f'Target is not a directory : {args.dir}')
 
 	return args
