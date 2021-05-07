@@ -15,9 +15,7 @@ REQUIRED_AGE = datetime.timedelta(minutes=2)
 def main():
 	args = get_args()
 
-	path_7z = shutil.which('7z')
-	if path_7z is None:
-		path_7z = shutil.which('p7zip')
+	path_7z = get_7z()
 	if path_7z is None:
 		sys.exit('7z is not found')
 
@@ -28,8 +26,7 @@ def main():
 			couchpath = os.path.splitext(filepath)[0] + '.extracted.ignore'
 			if os.path.exists(flagpath) or os.path.exists(couchpath):
 				continue
-			fname = pathlib.Path(filepath)
-			mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime)
+			mtime = get_mtime(filepath)
 			now = datetime.datetime.now()
 			age = now - mtime
 			if age < REQUIRED_AGE:
@@ -38,6 +35,18 @@ def main():
 				f.write('unpacking\n')
 				patoolib.extract_archive(filepath, outdir=root, program=path_7z)
 				f.write('unpacked\n')
+
+
+def get_7z() -> str:
+	path_7z = shutil.which('7z')
+	if path_7z is None:
+		path_7z = shutil.which('p7zip')
+	return path_7z
+
+
+def get_mtime(filepath: str) -> datetime.datetime:
+	fname = pathlib.Path(filepath)
+	return datetime.datetime.fromtimestamp(fname.stat().st_mtime)
 
 
 def get_args():
