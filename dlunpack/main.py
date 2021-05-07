@@ -32,9 +32,9 @@ def main():
 			if age < REQUIRED_AGE:
 				continue
 			with open(flagpath, 'w') as f:
-				f.write('unpacking')
+				f.write('unpacking\n')
 				patoolib.extract_archive(filepath, outdir=root, program=path_7z)
-				f.write('unpacked')
+				f.write('unpacked\n')
 
 
 def get_args():
