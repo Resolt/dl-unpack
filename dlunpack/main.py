@@ -25,7 +25,8 @@ def main():
 		for filename in filter(lambda x: os.path.splitext(x)[1] == '.rar', filenames):
 			filepath = os.path.join(root, filename)
 			flagpath = os.path.splitext(filepath)[0] + '.isunpacked'
-			if os.path.exists(flagpath):
+			couchpath = os.path.splitext(filepath)[0] + '.extracted.ignore'
+			if os.path.exists(flagpath) or os.path.exists(couchpath):
 				continue
 			fname = pathlib.Path(filepath)
 			mtime = datetime.datetime.fromtimestamp(fname.stat().st_mtime)
