@@ -33,7 +33,7 @@ def main():
 				continue
 			with open(flagpath, 'w') as f:
 				f.write('unpacking\n')
-				patoolib.extract_archive(filepath, outdir=root, program=path_7z)
+				patoolib.extract_archive(filepath, outdir=root, program=path_7z, interactive=False)
 				f.write('unpacked\n')
 
 
