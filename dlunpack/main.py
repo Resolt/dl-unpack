@@ -37,8 +37,6 @@ def main():
 def get_7z() -> str:
 	path_7z = shutil.which('7z')
 	if path_7z is None:
-		path_7z = shutil.which('p7zip')
-	if path_7z is None:
 		sys.exit('7z is not found')
 	return path_7z
 
