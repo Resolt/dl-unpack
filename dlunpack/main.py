@@ -12,11 +12,13 @@ REQUIRED_AGE = dt.timedelta(minutes=2)
 def main():
 	args = get_args()
 
-	path_7z = get_7z()
+	path_7z = shutil.which('7z')
+	if path_7z is None:
+		sys.exit('7z is not found')
 
 	for x in args.dir.glob('**/*.rar'):
-		flag = x.parent.joinpath(x.stem + '.isunpacked')
-		couch = x.parent.joinpath(x.stem + '.extracted.ignore')
+		flag = x.parent.joinpath(f'{x.stem}.isunpacked')
+		couch = x.parent.joinpath(f'{x.stem}.extracted.ignore')
 		if flag.exists() or couch.exists():
 			continue
 		age = dt.datetime.now() - dt.datetime.fromtimestamp(x.stat().st_mtime)
@@ -26,13 +28,6 @@ def main():
 			f.write('unpacking\n')
 			patoolib.extract_archive(str(x), outdir=x.parent, program=path_7z, interactive=False)
 			f.write('unpacked\n')
-
-
-def get_7z() -> str:
-	path_7z = shutil.which('7z')
-	if path_7z is None:
-		sys.exit('7z is not found')
-	return path_7z
 
 
 def get_args():
