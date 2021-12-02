@@ -15,8 +15,8 @@ def main():
 	path_7z = get_7z()
 
 	for x in args.dir.glob('**/*.rar'):
-		flag = Path(str(x) + '.isunpacked')
-		couch = Path(str(x) + '.extracted.ignore')
+		flag = x.parent.joinpath(x.stem + '.isunpacked')
+		couch = x.parent.joinpath(x.stem + '.extracted.ignore')
 		if flag.exists() or couch.exists():
 			continue
 		age = dt.datetime.now() - dt.datetime.fromtimestamp(x.stat().st_mtime)
