@@ -6,7 +6,7 @@ import datetime as dt
 from pathlib import Path
 
 
-REQUIRED_AGE = dt.timedelta(minutes=2)
+REQUIRED_AGE = dt.timedelta(minutes=1)
 
 
 def main():
